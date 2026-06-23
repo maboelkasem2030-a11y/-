@@ -1,0 +1,21 @@
+name: Generate Android Structure
+on: [push, workflow_dispatch]
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.x'
+      - name: Create Files
+        run: |
+          rm -rf android
+          flutter create . --platforms=android
+      - name: Commit Files
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add android/
+          git commit -am "Automated Android files generation" || exit 0
+          git push
